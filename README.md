@@ -7,6 +7,18 @@ Translate from Portuguese Brazil
 Esse são os códigos dos programas destinados a extrair e recompactar os arquivos SMD da versão de PS2.
 <br>Essa é a primeira versão, caso achar algum bug favor reportar.
 
+**versão alfa.1.1.0.0:**
+
+Atualizado o "SMD_PS2_Extractor.exe", o "SMD_PS2_Repack.exe" continua igual pode ser usado o mesmo.
+<br>Mudanças realizadas no SMD_PS2_Extractor:
+ - Agora usa de base a versão alfa.1.2.0.0 do BINdecoderTest
+ - então vai gerar os modelos 100x menor que a versão anterir.
+ - vai criar os arquivos: "rxxx_Model.mtl", "rxxx_Model_0.01.obj", "rxxx_Model_1.00.obj", "rxxx_Reference_0.01.smd", "rxxx_Reference_1.00.smd".
+  - * Model_1.00 é o tamanho real do cenário e Model_0.01 é 100x menor, que é a mesma escala dos .bin extraídos.
+  - * os arquivos "rxxx_Reference*" contem triângulos com as posições dos .bin definidos no arquivo .smd(re4).
+  - use o arquivo .bat "SMD_PS2_Extractor - Only models.bat" para criar somente os arquivos "rxxx_Model*" e "rxxx_Reference*", sem extrair os outros arquivos. (use para conferir o modelo como um todo)
+  - o arquivo .bat "SMD_PS2_Extractor.bat", extrai todos os arquivos.
+
 ## SMD_PS2_Extractor
 
 Responsável por extrair os arquivos do SMD.

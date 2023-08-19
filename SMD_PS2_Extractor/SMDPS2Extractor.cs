@@ -15,15 +15,21 @@ namespace SMD_PS2_Extractor
 
     Em desenvolvimento
     Para Pesquisas
-    12-03-2023
-    version: alfa.1.0.0.0
+    19-08-2023
+    version: alfa.1.1.0.0
     */
+
 
     public static class SMDPS2Extractor
     {
+        public const string VERSION = "A.1.1.0.0";
 
-        public static void Extrator(string Filename, bool EnableDebugInfo = false)
+        public static void Extrator(string Filename, bool ExtractOnlyModel = false, bool EnableDebugInfo = false)
         {
+            if (ExtractOnlyModel)
+            {
+                Console.WriteLine("Extract only model Mode!");
+            }
 
             FileInfo info = new FileInfo(Filename);
 
@@ -59,12 +65,12 @@ namespace SMD_PS2_Extractor
 
             var res = new BINdecoderTest.AltTextWriter(ParentDirectory + NameSMD + "\\DebugInfo\\" + "_" +NameSMD + ".txt2", EnableDebugInfo);
             res.WriteLine("##SMD_PS2_Extractor##");
-            res.WriteLine("##version A.1.0.0.0##");
+            res.WriteLine($"##version {VERSION}##");
             res.WriteLine(Filename);
 
-            var IdxSmd = new StreamWriter(ParentDirectory + NameSMD + ".idxSmdPs2");
+            var IdxSmd = new BINdecoderTest.AltTextWriter(ParentDirectory + NameSMD + ".idxSmdPs2", !ExtractOnlyModel);
             IdxSmd.WriteLine(":##SMD_PS2_Extractor##");
-            IdxSmd.WriteLine(":##version A.1.0.0.0##");
+            IdxSmd.WriteLine($":##version {VERSION}##");
 
             var file = new FileStream(Filename, FileMode.Open);
 
@@ -260,27 +266,30 @@ namespace SMD_PS2_Extractor
                 if (ListBinPos[i].Key != 0)
                 {
                     BinRealCount++;
-
-                    Console.WriteLine("Creating: " + NameSMD + "\\" + baseid + "_" + i + ".BIN");
-
+               
                     file.Position = Uoffsetbin + ListBinPos[i].Key;
                     byte[] arqBin = new byte[ListBinPos[i].Value];
                     file.Read(arqBin, 0, (int)ListBinPos[i].Value);
-                    File.WriteAllBytes(ParentDirectory + NameSMD + "\\" + baseid + "_" + i + ".BIN", arqBin);
-
+                    if (ExtractOnlyModel == false)
+                    {
+                        Console.WriteLine("Creating: " + NameSMD + "\\" + baseid + "_" + i + ".BIN");
+                        File.WriteAllBytes(ParentDirectory + NameSMD + "\\" + baseid + "_" + i + ".BIN", arqBin);
+                    }
+                  
                     //BIN
+                    
                     Stream stream = new MemoryStream(arqBin);
 
-                    BINdecoderTest.BIN bin = BINdecoderTest.BINdecoder.Decode(stream, ParentDirectory + NameSMD + "\\DebugInfo\\" + baseid + "_" + i + ".BIN", false, EnableDebugInfo);
-                    BINdecoderTest.BINdecoder.CreateObjMtl(bin, ParentDirectory + NameSMD + "\\Models", baseid + "_" + i, baseid);
-                    BINdecoderTest.BINdecoder.CreateIdxbin(bin, ParentDirectory + NameSMD + "\\Models", baseid + "_" + i);
+                    BINdecoderTest.BIN bin = BINdecoderTest.BINdecoder.Decode(stream, ParentDirectory + NameSMD + "\\DebugInfo\\" + baseid + "_" + i + ".BIN", false, false);
 
-                    if (EnableDebugInfo)
+                    //models
+                    if (ExtractOnlyModel == false)
                     {
-                        BINdecoderTest.BINdecoder.CreateDrawDistanceBoxObj(bin, ParentDirectory + NameSMD + "\\DebugInfo\\", baseid + "_" + i);
-                        BINdecoderTest.BINdecoder.CreateScaleLimitBoxObj(bin, ParentDirectory + NameSMD + "\\DebugInfo\\", baseid + "_" + i);
+                        BINdecoderTest.BINdecoder.CreateObjMtl(bin, ParentDirectory + NameSMD + "\\Models", baseid + "_" + i, baseid);
+                        BINdecoderTest.BINdecoder.CreateIdxbin(bin, ParentDirectory + NameSMD + "\\Models", baseid + "_" + i);
+                        BINdecoderTest.BINdecoder.CreateSMD(bin, ParentDirectory + NameSMD + "\\Models", baseid + "_" + i, baseid);
                     }
-                    
+
 
                     bins[i] = bin;
                 }
@@ -300,9 +309,18 @@ namespace SMD_PS2_Extractor
 
             byte[] arqTPL = new byte[tamanhoTPL];
             file.Read(arqTPL, 0, (int)tamanhoTPL);
-            File.WriteAllBytes(ParentDirectory + NameSMD + "\\" + baseid + ".TPL", arqTPL);
+            if (ExtractOnlyModel == false)
+            {
+                Console.WriteLine("Creating: " + NameSMD + "\\" + baseid + ".TPL");
+                File.WriteAllBytes(ParentDirectory + NameSMD + "\\" + baseid + ".TPL", arqTPL);
+            }
+           
+            CreateObjMtlScenario(SMDLines, bins, ParentDirectory + NameSMD + "\\Models", baseid, baseid, 1f);
+            CreateObjMtlScenario(SMDLines, bins, ParentDirectory + NameSMD + "\\Models", baseid, baseid, 0.01f);
+            
+            CreateSMDmodelReference(SMDLines, ParentDirectory + NameSMD + "\\Models", baseid, 0.01f);
+            CreateSMDmodelReference(SMDLines, ParentDirectory + NameSMD + "\\Models", baseid, 1f);
 
-            CreateObjMtlScenario(SMDLines, bins, ParentDirectory + NameSMD + "\\Models", baseid);
 
             IdxSmd.WriteLine("");
             IdxSmd.WriteLine("SmdCount:" + length);
@@ -316,7 +334,61 @@ namespace SMD_PS2_Extractor
 
         }
 
-        private static void CreateObjMtlScenario(SMDLine[] SMDLines, BINdecoderTest.BIN[] bins, string baseDiretory, string baseFileName)
+
+        private static void CreateSMDmodelReference(SMDLine[] SMDLines, string baseDiretory, string smdFileName, float scale) 
+        {
+            if (baseDiretory[baseDiretory.Length - 1] != '\\')
+            {
+                baseDiretory += "\\";
+            }
+
+            TextWriter text = new FileInfo(baseDiretory + smdFileName + "_Reference_"+ scale.ToString("F", System.Globalization.CultureInfo.InvariantCulture) + ".smd").CreateText();
+            text.WriteLine("version 1");
+            text.WriteLine("nodes");
+
+            for (int i = 0; i < SMDLines.Length; i++)
+            {
+                text.WriteLine(i + " \"SMD_"+ i.ToString("D3") +"_BIN_"+ SMDLines[i].BinID.ToString("D3") + "\" -1");
+            }
+            text.WriteLine(SMDLines.Length + " \"Center\" -1");
+            text.WriteLine("end");
+
+            text.WriteLine("skeleton");
+            text.WriteLine("time 0");
+
+            for (int i = 0; i < SMDLines.Length; i++)
+            {
+                text.WriteLine(i +
+                   " " + (SMDLines[i].positionX * SMDLines[i].scaleX * scale).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) +
+                   " " + (SMDLines[i].positionZ * SMDLines[i].scaleZ * scale * -1).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) +
+                   " " + (SMDLines[i].positionY * SMDLines[i].scaleY * scale).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) +
+                   " 0.0000000 0.000000 0.000000"
+                   );
+            }
+            text.WriteLine(SMDLines.Length + " 0.0000000 0.000000 0.000000 0.0000000 0.000000 0.000000"); //center
+
+            text.WriteLine("end");
+
+            text.WriteLine("triangles");
+
+            for (int i = 0; i < SMDLines.Length; i++)
+            {
+                text.WriteLine("NoMaterial");
+                text.WriteLine(i.ToString() + " " + ((SMDLines[i].positionX * SMDLines[i].scaleX * scale)).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + ((SMDLines[i].positionZ * SMDLines[i].scaleZ * scale * -1)).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + (SMDLines[i].positionY * SMDLines[i].scaleY * scale).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " 0 0 0 0 0 0");
+                text.WriteLine(i.ToString() + " " + ((SMDLines[i].positionX * SMDLines[i].scaleX * scale)).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + ((SMDLines[i].positionZ * SMDLines[i].scaleZ * scale * -1) + 10).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + ((SMDLines[i].positionY * SMDLines[i].scaleY * scale) - 10).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " 0 0 0 0 0 0");
+                text.WriteLine(i.ToString() + " " + ((SMDLines[i].positionX * SMDLines[i].scaleX * scale)).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + ((SMDLines[i].positionZ * SMDLines[i].scaleZ * scale * -1) - 10).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " " + ((SMDLines[i].positionY * SMDLines[i].scaleY * scale) - 10).ToString("F9", System.Globalization.CultureInfo.InvariantCulture) + " 0 0 0 0 0 0");
+            }
+
+
+            text.WriteLine("end");
+            text.WriteLine("//##SMD_PS2_Extractor##");
+            text.WriteLine($"//##Version {VERSION}##");
+
+            text.Close();
+        }
+
+
+        private static void CreateObjMtlScenario(SMDLine[] SMDLines, BINdecoderTest.BIN[] bins, string baseDiretory, string baseFileName, string objFileName, float scale)
         {
             if (baseDiretory[baseDiretory.Length - 1] != '\\')
             {
@@ -325,7 +397,7 @@ namespace SMD_PS2_Extractor
 
             TextWriter MTLtext = new FileInfo(baseDiretory + baseFileName + "_Model.mtl").CreateText();
             MTLtext.WriteLine("##SMD_PS2_Extractor##");
-            MTLtext.WriteLine("##Version A.1.0.0.0##");
+            MTLtext.WriteLine($"##Version {SMDPS2Extractor.VERSION}##");
             MTLtext.WriteLine("");
 
             for (int b = 0; b < bins.Length; b++)
@@ -352,23 +424,23 @@ namespace SMD_PS2_Extractor
             MTLtext.Close();
 
 
-            TextWriter text = new FileInfo(baseDiretory + baseFileName + "_Model.obj").CreateText();
+            TextWriter text = new FileInfo(baseDiretory + objFileName + "_Model_" + scale.ToString("F", System.Globalization.CultureInfo.InvariantCulture) + ".obj").CreateText();
             text.WriteLine("##SMD_PS2_Extractor##");
-            text.WriteLine("##version A.1.0.0.0##");
+            text.WriteLine($"##version {SMDPS2Extractor.VERSION}##");
             text.WriteLine("mtllib " + baseFileName + "_Model.mtl");
 
             int indexGeral = 1;
 
             for (int i = 0; i < SMDLines.Length; i++)
             {
-                DrawScenarioPart(ref text, SMDLines[i], bins[SMDLines[i].BinID], ref indexGeral, baseFileName, i);
+                DrawScenarioPart(ref text, SMDLines[i], bins[SMDLines[i].BinID], ref indexGeral, baseFileName, i, scale);
             }
 
             text.Close();
 
         }
 
-        private static void DrawScenarioPart(ref TextWriter text, SMDLine SMDLine, BINdecoderTest.BIN bin, ref int indexGeral, string baseFileName, int smdID)
+        private static void DrawScenarioPart(ref TextWriter text, SMDLine SMDLine, BINdecoderTest.BIN bin, ref int indexGeral, string baseFileName, int smdID, float scale)
         {
             text.WriteLine("o SMD_" + smdID.ToString("D3") + "_BIN_" + SMDLine.BinID.ToString("D3") +"_SMX_" + SMDLine.SmxID.ToString("D3") + "_Type_0x" + SMDLine.objectStatus.ToString("X2"));
 
@@ -400,9 +472,9 @@ namespace SMD_PS2_Extractor
                         pos = Utils.RotationInY(pos, SMDLine.angleY);
                         pos = Utils.RotationInZ(pos, SMDLine.angleZ);
                        
-                        pos[0] = (pos[0] * SMDLine.scaleX) + SMDLine.positionX;
-                        pos[1] = (pos[1] * SMDLine.scaleY) + SMDLine.positionY;
-                        pos[2] = (pos[2] * SMDLine.scaleZ) + SMDLine.positionZ;
+                        pos[0] = ((pos[0] * SMDLine.scaleX) + SMDLine.positionX) * scale;
+                        pos[1] = ((pos[1] * SMDLine.scaleY) + SMDLine.positionY) * scale;
+                        pos[2] = ((pos[2] * SMDLine.scaleZ) + SMDLine.positionZ) * scale;
 
                         text.WriteLine("v " + pos[0].ToString("f9", System.Globalization.CultureInfo.InvariantCulture) + " " +
                              pos[1].ToString("f9", System.Globalization.CultureInfo.InvariantCulture) + " " +

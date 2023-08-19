@@ -13,13 +13,22 @@ namespace SMD_PS2_Extractor
         {
             Console.WriteLine("start");
 
-            Console.WriteLine("SMD_PS2_Extractor Version A.1.0.0.0");
+            Console.WriteLine("## SMD_PS2_Extractor ##");
+            Console.WriteLine($"## Version {SMDPS2Extractor.VERSION} ##");
+            Console.WriteLine("## By JADERLINK and HardRain ##");
 
             if (args.Length >= 1 && File.Exists(args[0]))
             {
-                bool EnableDebugInfo = false;
+                bool ExtractOnlyModel = false;
 
                 if (args.Length >= 2 && args[1].ToUpper() == "TRUE")
+                {
+                    ExtractOnlyModel = true;
+                }
+
+                bool EnableDebugInfo = false;
+
+                if (args.Length >= 3 && args[2].ToUpper() == "TRUE")
                 {
                     EnableDebugInfo = true;
                 }
@@ -32,7 +41,7 @@ namespace SMD_PS2_Extractor
                 {
                     try
                     {
-                        SMDPS2Extractor.Extrator(fileInfo.FullName, EnableDebugInfo);
+                        SMDPS2Extractor.Extrator(fileInfo.FullName, ExtractOnlyModel, EnableDebugInfo);
                     }
                     catch (Exception ex)
                     {
