@@ -9,7 +9,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
 {
     class Program
     {
-        public const string VERSION = "B.1.2.0.0 (2024-01-02)";
+        public const string VERSION = "B.1.2.0.1 (2024-01-20)";
 
         public static string headerText()
         {

@@ -6,6 +6,9 @@ Translate from Portuguese Brazil
 
 Programa destinado a extrair e recompactar os cenários usando somente um arquivo .OBJ;
 
+**Update: B.1.2.0.1**
+<br>Corrigido bug que crashava o programa, agora, ao ter material sem a textura principal "map_Kd", será preenchido o Id da textura como 0000; 
+
 ## Update B.1.2.0.0
 
 Nessa atualização, eu refiz a tool, agora é somente um único executável. O funcionamento dessa tool é parecido com a tool de scenario do UHD, só que essa é para a versão de PS2.
@@ -48,7 +51,7 @@ Use o bat: "RE4_PS2_SCENARIO_SMD_TOOL Repack all with idxps2scenario.bat"
 * r100_004.TPL (obrigatório);
 * r100_004.scenario.mtl OU r100_004.scenario.idxmaterial;
 
-<br> Ao fazer o repack será gerado os arquivos:
+Ao fazer o repack será gerado os arquivos:
 * r100_004.SMD (esse é o arquivo para ser colocado no r100.dat);
 * r100_004.scenario.Repack.idxmaterial
 * r100_004.scenario.Repack.idxps2smd
@@ -69,7 +72,7 @@ Ao fazer o repack será gerado os arquivos:
 Nota: esse é o método antigo, no qual se edita os bin individualmente, porem o repack com .idxps2scenario cria novos bin modificados, e um novo .idxps2smd, no qual pode ser usado para fazer esse repack; essa opção é para caso você queira colocar um .bin no .smd que o programa não consiga criar.
 
 ## Sobre r100_004.scenario.obj
-<br>Esse arquivo é onde está todo o cenário, nele os arquivos BIN são separados por grupos, no qual é nomenclatura deve ser respeitada:
+Esse arquivo é onde está todo o cenário, nele os arquivos BIN são separados por grupos, no qual é nomenclatura deve ser respeitada:
 <br> Exemplo:
 <br> PS2SCENARIO#SMD_000#SMX_000#TYPE_09#BIN_129#COLOR#
 <br> PS2SCENARIO#SMD_077#SMX_060#TYPE_8C#BIN_140#NORMAL#
@@ -140,7 +143,7 @@ Ao mudar os valores originais dos campos "xxx_scale*", "xxx_angle*", "xxx_positi
 ## Código de terceiro:
 
 [ObjLoader by chrisjansson](https://github.com/chrisjansson/ObjLoader):
-Encontra-se no RE4_UHD_SCENARIO_SMD_TOOL, código modificado, as modificações podem ser vistas aqui: [link](https://github.com/JADERLINK/ObjLoader).
+Encontra-se no RE4_PS2_SCENARIO_SMD_TOOL, código modificado, as modificações podem ser vistas aqui: [link](https://github.com/JADERLINK/ObjLoader).
 
 **At.te: JADERLINK**
-<br>2024-01-02
+<br>2024-01-20

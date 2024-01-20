@@ -163,6 +163,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
                 if (finalBinList.ContainsKey(i))
                 {
+                    Console.WriteLine("BIN ID: " + i.ToString("D3"));
                     BINmakeFile.MakeFinalBinFile(stream, tempOffset, out outOffset, finalBinList[i], IdxBinDic[i], IdxBinDic[i].BoneLines, ConversionFactorValueDic[i], material);
 
                     if (createBinFiles)
