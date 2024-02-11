@@ -93,9 +93,19 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
                         if (bin.binType != BinType.ScenarioWithColors)
                         {
-                            text.WriteLine("vn " + ((float)vertexLine.NormalX / 127f).ToString("f9", inv) + " " +
-                             ((float)vertexLine.NormalY / 127f).ToString("f9", inv) + " " +
-                             ((float)vertexLine.NormalZ / 127f).ToString("f9", inv));
+                            float[] normal = new float[3]; // 0 = x, 1 = y, 2 = z
+                            normal[0] = (float)vertexLine.NormalX / 127f;
+                            normal[1] = (float)vertexLine.NormalY / 127f;
+                            normal[2] = (float)vertexLine.NormalZ / 127f;
+
+                            normal = RotationUtils.RotationInX(normal, SMDLine.angleX);
+                            normal = RotationUtils.RotationInY(normal, SMDLine.angleY);
+                            normal = RotationUtils.RotationInZ(normal, SMDLine.angleZ);
+
+                            text.WriteLine("vn " + 
+                                 (normal[0]).ToString("f9", inv) + " " +
+                                 (normal[1]).ToString("f9", inv) + " " +
+                                 (normal[2]).ToString("f9", inv));
                         }
                         else
                         {

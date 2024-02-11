@@ -138,9 +138,18 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                         vertex.PosY = pos1[1] / 100f;
                         vertex.PosZ = pos1[2] / 100f;
 
-                        vertex.NormalX = Faces[i][t].Normal.X;
-                        vertex.NormalY = Faces[i][t].Normal.Y;
-                        vertex.NormalZ = Faces[i][t].Normal.Z;
+                        float[] normal1 = new float[3];// 0 = x, 1 = y, 2 = z
+                        normal1[0] = Faces[i][t].Normal.X;
+                        normal1[1] = Faces[i][t].Normal.Y;
+                        normal1[2] = Faces[i][t].Normal.Z;
+
+                        normal1 = RotationUtils.RotationInZ(normal1, -smdLine.angleZ);
+                        normal1 = RotationUtils.RotationInY(normal1, -smdLine.angleY);
+                        normal1 = RotationUtils.RotationInX(normal1, -smdLine.angleX);
+
+                        vertex.NormalX = normal1[0];
+                        vertex.NormalY = normal1[1];
+                        vertex.NormalZ = normal1[2];
 
                         vertex.TextureU = Faces[i][t].Texture.U;
                         vertex.TextureV = Faces[i][t].Texture.V;
