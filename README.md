@@ -6,6 +6,9 @@ Translate from Portuguese Brazil
 
 Programa destinado a extrair e recompactar os cenários usando somente um arquivo .OBJ;
 
+**Update: B.1.4.0.3**
+<br>Arrumado bug ao carregar o arquivo .idxmaterial;
+
 **Update: B.1.2.0.2**
 <br>Corrigido bug no qual não era rotacionado as normals dos modelos que têm rotação, então, caso esteja usando um .obj de versões anteriores, recalcule as normals;
 
@@ -149,4 +152,4 @@ Ao mudar os valores originais dos campos "xxx_scale*", "xxx_angle*", "xxx_positi
 Encontra-se no RE4_PS2_SCENARIO_SMD_TOOL, código modificado, as modificações podem ser vistas aqui: [link](https://github.com/JADERLINK/ObjLoader).
 
 **At.te: JADERLINK**
-<br>2024-02-11
+<br>2024-03-03

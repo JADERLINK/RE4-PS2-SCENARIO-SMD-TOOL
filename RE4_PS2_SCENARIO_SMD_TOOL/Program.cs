@@ -9,11 +9,13 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
 {
     class Program
     {
-        public const string VERSION = "B.1.2.0.2 (2024-02-11)";
+        public const string VERSION = "B.1.2.0.3 (2024-03-03)";
 
         public static string headerText()
         {
-            return "# RE4_PS2_SCENARIO_SMD_TOOL" + Environment.NewLine +
+            return "# github.com/JADERLINK/RE4-PS2-SCENARIO-SMD-TOOL" + Environment.NewLine +
+                   "# youtube.com/@JADERLINK" + Environment.NewLine +
+                   "# RE4_PS2_SCENARIO_SMD_TOOL" + Environment.NewLine +
                    "# By JADERLINK" + Environment.NewLine +
                   $"# Version {VERSION}";
         }
@@ -27,6 +29,8 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
             {
                 Console.WriteLine("For more information read:");
                 Console.WriteLine("https://github.com/JADERLINK/RE4-PS2-SCENARIO-SMD-TOOL");
+                Console.WriteLine("Press any key to close the console.");
+                Console.ReadKey();
             }
             else if (args.Length >= 1 && File.Exists(args[0]))
             {
