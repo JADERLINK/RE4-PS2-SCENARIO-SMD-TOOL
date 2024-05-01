@@ -11,7 +11,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 {
     public static class OutputScenario
     {
-        public static void CreateObjScenario(SMDLine[] SMDLines, Dictionary<int, BIN> bins, Dictionary<MaterialPart, string> materialList, string baseDiretory, string baseFileName)
+        public static void CreateObjScenario(SMDLine[] SMDLines, Dictionary<int, PS2BIN> bins, Dictionary<MaterialPart, string> materialList, string baseDiretory, string baseFileName)
         {
             TextWriter text = new FileInfo(baseDiretory + baseFileName + ".obj").CreateText();
             text.WriteLine(Program.headerText());
@@ -32,9 +32,8 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
         }
 
-        private static void DrawScenarioPart(ref TextWriter text, SMDLine SMDLine, BIN bin, Dictionary<MaterialPart, string> materialList, ref uint indexCount, int smdID)
+        private static void DrawScenarioPart(ref TextWriter text, SMDLine SMDLine, PS2BIN bin, Dictionary<MaterialPart, string> materialList, ref uint indexCount, int smdID)
         {
-            var inv = System.Globalization.CultureInfo.InvariantCulture;
 
             string g = "g PS2SCENARIO#SMD_" + smdID.ToString("D3") + "#SMX_" + SMDLine.SmxID.ToString("D3") + "#TYPE_" + SMDLine.objectStatus.ToString("X2") + "#BIN_" + SMDLine.BinID.ToString("D3") + "#";
 
@@ -74,38 +73,46 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                         pos[1] = ((pos[1] * SMDLine.scaleY) + SMDLine.positionY) / CONSTs.GLOBAL_SCALE;
                         pos[2] = ((pos[2] * SMDLine.scaleZ) + SMDLine.positionZ) / CONSTs.GLOBAL_SCALE;
 
-                        string v = "v " + (pos[0]).ToString("F9", inv)
-                         + " " + (pos[1]).ToString("F9", inv)
-                         + " " + (pos[2]).ToString("F9", inv);
+                        string v = "v " + pos[0].ToFloatString()
+                         + " " + pos[1].ToFloatString()
+                         + " " + pos[2].ToFloatString();
 
                         if (bin.binType == BinType.ScenarioWithColors)
                         {
                             // nesse caso o valor no campo normal, na verdade são cores
-                            v += " " + (vertexLine.NormalX / 255f).ToString("F9", inv)
-                               + " " + (vertexLine.NormalY / 255f).ToString("F9", inv)
-                               + " " + (vertexLine.NormalZ / 255f).ToString("F9", inv)
-                               + " " + (vertexLine.UnknownB / 128f).ToString("F9", inv);
+                            v += " " + (vertexLine.NormalX / 128f).ToFloatString() + 
+                                 " " + (vertexLine.NormalY / 128f).ToFloatString() + 
+                                 " " + (vertexLine.NormalZ / 128f).ToFloatString() + 
+                                 " " + (vertexLine.UnknownB / 128f).ToFloatString();
                         }
+
                         text.WriteLine(v);
 
-                        text.WriteLine("vt " + ((float)vertexLine.TextureU / 255f).ToString("f9", inv) + " " +
-                        ((float)vertexLine.TextureV / 255f).ToString("f9", inv));
+                        text.WriteLine("vt " + ((float)vertexLine.TextureU / 255f).ToFloatString() + " " +
+                        ((float)vertexLine.TextureV / 255f).ToFloatString());
 
                         if (bin.binType != BinType.ScenarioWithColors)
                         {
+                            float nx = vertexLine.NormalX;
+                            float ny = vertexLine.NormalY;
+                            float nz = vertexLine.NormalZ;
+
+                            float NORMAL_FIX = (float)Math.Sqrt((nx * nx) + (ny * ny) + (nz * nz));
+                            NORMAL_FIX = (NORMAL_FIX == 0) ? 1 : NORMAL_FIX;
+                            nx /= NORMAL_FIX;
+                            ny /= NORMAL_FIX;
+                            nz /= NORMAL_FIX;
+
                             float[] normal = new float[3]; // 0 = x, 1 = y, 2 = z
-                            normal[0] = (float)vertexLine.NormalX / 127f;
-                            normal[1] = (float)vertexLine.NormalY / 127f;
-                            normal[2] = (float)vertexLine.NormalZ / 127f;
+                            normal[0] = nx;
+                            normal[1] = ny;
+                            normal[2] = nz;
 
                             normal = RotationUtils.RotationInX(normal, SMDLine.angleX);
                             normal = RotationUtils.RotationInY(normal, SMDLine.angleY);
                             normal = RotationUtils.RotationInZ(normal, SMDLine.angleZ);
 
-                            text.WriteLine("vn " + 
-                                 (normal[0]).ToString("f9", inv) + " " +
-                                 (normal[1]).ToString("f9", inv) + " " +
-                                 (normal[2]).ToString("f9", inv));
+                            text.WriteLine("vn " + normal[0].ToFloatString() + " " + normal[1].ToFloatString() + " " + normal[2].ToFloatString());
                         }
                         else
                         {

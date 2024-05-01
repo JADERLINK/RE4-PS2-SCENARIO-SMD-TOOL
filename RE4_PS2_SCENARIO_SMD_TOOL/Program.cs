@@ -9,7 +9,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
 {
     class Program
     {
-        public const string VERSION = "B.1.2.0.3 (2024-03-03)";
+        public const string VERSION = "B.1.2.04 (2024-05-01)";
 
         public static string headerText()
         {
@@ -67,14 +67,22 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 string scenarioName = baseName + ".scenario";
                 string BinFolder = baseName + "_BIN";
                 string tplFileName = baseName + ".TPL";
+                string BaseBinDirectory = baseDirectory + baseName + "_BIN\\";
+                string tplPath = baseDirectory + tplFileName;
 
-                Dictionary<int, RE4_PS2_BIN_TOOL.EXTRACT.BIN> BinDic = null;
+                Dictionary<int, RE4_PS2_BIN_TOOL.EXTRACT.PS2BIN> BinDic = null;
                 Dictionary<RE4_PS2_BIN_TOOL.ALL.MaterialPart, string> materialInvDic = null;
                 Dictionary<int, SCENARIO.BinRenderBox> Boxes = null;
                 int BinRealCount = 0;
 
-                var SmdLines = SCENARIO.Ps2ScenarioExtract.Extract(fileInfo, out BinDic, out Boxes, out BinRealCount);
-                var idxMaterial = SCENARIO.Ps2ScenarioExtract.IdxMaterialMultParser(BinDic, out materialInvDic);
+                SCENARIO.Ps2ScenarioExtract extractSMD = new SCENARIO.Ps2ScenarioExtract();
+                SCENARIO.ToFileMethods toFileMethods = new SCENARIO.ToFileMethods(BaseBinDirectory, tplPath, true);
+
+                extractSMD.ToFileBin += toFileMethods.ToFileBin;
+                extractSMD.ToFileTpl += toFileMethods.ToFileTpl;
+
+                var SmdLines = extractSMD.Extract(fileInfo, out BinDic, out Boxes, out BinRealCount);
+                var idxMaterial = SCENARIO.Ps2ScenarioMatFix.IdxMaterialMultParser(BinDic, out materialInvDic);
 
                 //create obj
                 SCENARIO.OutputScenario.CreateObjScenario(SmdLines, BinDic, materialInvDic, baseDirectory, scenarioName);
@@ -195,6 +203,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 Dictionary<int, SCENARIO.SMDLineIdx> SMDLineIdxDic = null;
                 Dictionary<int, float> ConversionFactorValueDic = null;
                 Dictionary<int, SCENARIO.BinRenderBox> Boxes = null;
+
                 SCENARIO.Ps2ScenarioRepack.RepackOBJ(
                     objFile, 
                     ref idxPs2Scenario, 

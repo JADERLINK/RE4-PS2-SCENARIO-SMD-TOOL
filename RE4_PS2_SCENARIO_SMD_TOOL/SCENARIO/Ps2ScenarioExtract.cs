@@ -9,29 +9,32 @@ using RE4_PS2_BIN_TOOL.ALL;
 
 namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 {
-    public static class Ps2ScenarioExtract
+    public class Ps2ScenarioExtract
     {
-        public static SMDLine[] Extract(FileInfo SMDinfo, out Dictionary<int, BIN> BinDic, out Dictionary<int, BinRenderBox> Boxes, out int BinRealCount) 
+        //Action<Stream fileStream, long binOffset, long endOffset, int binID>
+        public event Action<Stream, long, long, int> ToFileBin;
+
+        //Action<Stream fileStream, long tplOffset, long endOffset>
+        public event Action<Stream, long, long> ToFileTpl;
+
+        public SMDLine[] Extract(FileInfo SMDinfo, out Dictionary<int, PS2BIN> BinDic, out Dictionary<int, BinRenderBox> Boxes, out int BinRealCount) 
         {
-            string FileBaseName = SMDinfo.Name.Substring(0, SMDinfo.Name.Length - SMDinfo.Extension.Length);
-            string BaseDirectory = SMDinfo.DirectoryName + "\\";
-            string BaseBinDirectory = BaseDirectory + FileBaseName + "_BIN\\";
-
-            Directory.CreateDirectory(BaseBinDirectory);
-
             BinaryReader br = new BinaryReader(SMDinfo.OpenRead());
 
             ushort Magic = br.ReadUInt16();
+
+            if (!(Magic == 0x0040 || Magic == 0x0031))
+            {
+                throw new ArgumentException("Invalid SMD file!!!");
+            }
+
             ushort SmdLength = br.ReadUInt16();
+
             uint offsetBIN = br.ReadUInt32();
             uint offsetTPL = br.ReadUInt32();
             uint none1 = br.ReadUInt32();
 
-            if (! (Magic == 0x0040 || Magic == 0x0031))
-            {
-                throw new ArgumentException("Invalid SMD file");
-            }
-
+         
             SMDLine[] SMDLines = new SMDLine[SmdLength];
 
             //64 bytes de tamanho
@@ -100,7 +103,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                 BinOffsetList.Add(tempOffset);
             }
 
-            BinDic = new Dictionary<int, BIN>();
+            BinDic = new Dictionary<int, PS2BIN>();
             Boxes = new Dictionary<int, BinRenderBox>();
             BinRealCount = 0;
 
@@ -115,7 +118,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
                     try
                     {
-                        var bin = BINdecoder.Decode(br.BaseStream, startOffset, out endOffset, new AltTextWriter("", false));
+                        var bin = BINdecoder.Decode(br.BaseStream, startOffset, out endOffset);
                         BinDic.Add(i, bin);
                     }
                     catch (Exception ex)
@@ -125,13 +128,10 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
                     //-------
 
-                    //le os bytes do bin
+                    //le os bytes do bin para criar BinRenderBox
                     br.BaseStream.Position = startOffset;
-                    int lenght = (int)(endOffset - startOffset);
-
-                    byte[] binArray = new byte[lenght];
-                    br.BaseStream.Read(binArray, 0, (int)lenght);
-                    //---
+                    byte[] binArray = new byte[0x50];
+                    br.BaseStream.Read(binArray, 0, 0x50);
 
                     BinRenderBox box = new BinRenderBox();
                     box.DrawDistanceNegativeX = BitConverter.ToSingle(binArray, 0x30);
@@ -144,20 +144,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
                     Boxes.Add(i, box);
 
-                    //-----
-                    try
-                    {
-                        // e grava em um arquivo
-                        string binPath = BaseBinDirectory + i.ToString("D4") + ".BIN";
-                        File.WriteAllBytes(binPath, binArray);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error on write in file: " + i.ToString("D3") + ".BIN" + Environment.NewLine + ex.ToString());
-                    }
-
-
-
+                    ToFileBin?.Invoke(br.BaseStream, startOffset, endOffset, i);
                 }
                 
             }
@@ -169,72 +156,14 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
             uint tplOffset = br.ReadUInt32();
             tplOffset = tplOffset + offsetTPL;
-            
-            byte[] tplArray = new byte[0];
 
-            try
-            {
-                //le os bytes do tpl e grava em um arquivo
-                br.BaseStream.Position = tplOffset;
-                int tplLenght = (int)(br.BaseStream.Length - tplOffset);
-
-                tplArray = new byte[tplLenght];
-                br.BaseStream.Read(tplArray, 0, tplLenght);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error on Read: Tpl in Smd" + Environment.NewLine + ex.ToString());
-            }
-
-            try
-            {
-                string tplPath = BaseDirectory + FileBaseName + ".TPL";
-                File.WriteAllBytes(tplPath, tplArray);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error on write in file: TPL.TPL" + Environment.NewLine + ex.ToString());
-            }
+            ToFileTpl?.Invoke(br.BaseStream, tplOffset, br.BaseStream.Length);
 
             br.Close();
             return SMDLines;
         }
 
-
-
-        public static IdxMaterial IdxMaterialMultParser(Dictionary<int, BIN> BinDic, out Dictionary<MaterialPart, string> invDic)
-        {
-            IdxMaterial idx = new IdxMaterial();
-            idx.MaterialDic = new Dictionary<string, MaterialPart>();
-            invDic = new Dictionary<MaterialPart, string>();
-
-            int counter = 0;
-
-            foreach (var item in BinDic)
-            {
-                if (item.Value != null)
-                {
-                    for (int i = 0; i < item.Value.materials.Length; i++)
-                    {
-                        var mat = new MaterialPart(item.Value.materials[i].materialLine);
-
-                        if (!invDic.ContainsKey(mat))
-                        {
-                            string matKey = CONSTs.SCENARIO_MATERIAL + counter.ToString("D3");
-                            invDic.Add(mat, matKey);
-                            idx.MaterialDic.Add(matKey, mat);
-                            counter++;
-                        }
-
-                    }
-                }
-
-            }
-            return idx;
-        }
     }
-
-
 
 
     public class SMDLine

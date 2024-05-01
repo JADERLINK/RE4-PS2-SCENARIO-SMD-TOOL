@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="ALL\AltTextWriter.cs" />
     <Compile Include="ALL\CONSTs.cs" />
+    <Compile Include="ALL\FloatExtensions.cs" />
     <Compile Include="ALL\IdxMaterial.cs" />
     <Compile Include="ALL\IdxMaterialLoad.cs" />
     <Compile Include="ALL\IdxMaterialParser.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="SCENARIO\MakeSMD_WithBinFolder.cs" />
     <Compile Include="SCENARIO\OutputScenario.cs" />
     <Compile Include="SCENARIO\Ps2ScenarioExtract.cs" />
+    <Compile Include="SCENARIO\Ps2ScenarioMatFix.cs" />
     <Compile Include="SCENARIO\Ps2ScenarioRepack.cs" />
     <Compile Include="SCENARIO\RotationUtils.cs" />
     <Compile Include="REPACK\CjClutter.ObjLoader.Loader\Data\DataStore\IGroupNameDataStore.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="REPACK\CjClutter.ObjLoader.Loader\TypeParsers\VertexParser.cs" />
     <Compile Include="SCENARIO\SmdBaseLine.cs" />
     <Compile Include="SCENARIO\SmdLineParcer.cs" />
+    <Compile Include="SCENARIO\ToFileMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

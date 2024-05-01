@@ -6,7 +6,14 @@ Translate from Portuguese Brazil
 
 Programa destinado a extrair e recompactar os cenários usando somente um arquivo .OBJ;
 
-**Update: B.1.4.0.3**
+**Update: B.1.2.04**
+<br>Arrumado a compatibilidade com alguns arquivos SMD, por exemplo, o SMD do cenário r215;
+<br>Agora, ao extrair o arquivo .bin as "normals" serão normalizadas em vez de ser dividido por um valor padrão;
+<br> Ao fazer repack as normals do arquivo .obj serão normalizadas para evitar erros.
+<br> O programa, ao gerar o arquivo .obj, não terá mais os zeros não significativos dos números, mudança feita para gerar arquivos menores.
+<br> Arrumado o suporte para carregar cores de vértice do arquivo .obj, agora a conversão das cores é feita diferente do que era feito na versão anterior; 
+
+**Update: B.1.2.0.3**
 <br>Arrumado bug ao carregar o arquivo .idxmaterial;
 
 **Update: B.1.2.0.2**
@@ -137,8 +144,8 @@ Agora, é no arquivo MTL é onde são definidos quais são os IDs (índices do T
 
 ## DrawDistance
 Caso o seu modelo fique muito longe da posição original, ele pode começar a aparecer e desaparecer, isso é devido aos valores que definem a que distância os modelos iram ser vistos.
-<br> Mude os valores de "xxx_DrawDistanceNegative*" para -327670
-<br> E os valores de "xxx_DrawDistancePositive*:" para 655340
+<br> Mude os valores de "xxx_DrawDistanceNegative*" para -327670 ou 0
+<br> E os valores de "xxx_DrawDistancePositive*:" para 655340 ou 0
 <br> Isso vai garantir que o modelo fique visível, porém pode gerar um bug na iluminação.
 
 ## Bugs e Infos
@@ -152,4 +159,4 @@ Ao mudar os valores originais dos campos "xxx_scale*", "xxx_angle*", "xxx_positi
 Encontra-se no RE4_PS2_SCENARIO_SMD_TOOL, código modificado, as modificações podem ser vistas aqui: [link](https://github.com/JADERLINK/ObjLoader).
 
 **At.te: JADERLINK**
-<br>2024-03-03
+<br>2024-05-01
