@@ -19,10 +19,6 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
             this.DirectoryToSaveBIN = DirectoryToSaveBIN;
             this.PathToSaveTPL = PathToSaveTPL;
             this.EnableExtract = EnableExtract;
-            if (EnableExtract)
-            {
-                Directory.CreateDirectory(DirectoryToSaveBIN);
-            }
         }
 
         public void ToFileBin(Stream fileStream, long binOffset, long endOffset, int binID)
@@ -31,6 +27,11 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
             {
                 try
                 {
+                    if ( ! Directory.Exists(DirectoryToSaveBIN))
+                    {
+                        Directory.CreateDirectory(DirectoryToSaveBIN);
+                    }
+
                     //le os bytes do bin e grava em um arquivo
                     fileStream.Position = binOffset;
                     long lenght = endOffset - binOffset;
@@ -38,7 +39,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                     byte[] binArray = new byte[lenght];
                     fileStream.Read(binArray, 0, (int)lenght);
 
-                    string binPath = DirectoryToSaveBIN + binID.ToString("D4") + ".BIN";
+                    string binPath = Path.Combine(DirectoryToSaveBIN, binID.ToString("D4") + ".BIN");
                     File.WriteAllBytes(binPath, binArray);
                 }
                 catch (Exception ex)

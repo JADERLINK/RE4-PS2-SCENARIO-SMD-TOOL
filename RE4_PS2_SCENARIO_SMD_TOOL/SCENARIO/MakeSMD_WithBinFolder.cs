@@ -12,12 +12,12 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
     {
         public static void CreateSMD(string baseDirectory, IdxPs2Scenario idxScenario)
         {
-            string binPath = baseDirectory + idxScenario.BinFolder + "\\";
-            string tplFilePath = baseDirectory + idxScenario.TplFile;
+            string binPath = Path.Combine(baseDirectory, idxScenario.BinFolder);
+            string tplFilePath = Path.Combine(baseDirectory, idxScenario.TplFile);
 
             int SmdCount = idxScenario.SmdAmount;
 
-            Stream stream = new FileInfo(baseDirectory + idxScenario.SmdFileName).Create();
+            Stream stream = new FileInfo(Path.Combine(baseDirectory, idxScenario.SmdFileName)).Create();
 
             byte[] header = new byte[0x10];
             header[0] = 0x40;
@@ -146,7 +146,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
             for (int i = 0; i < BinCount; i++)
             {
-                string binFilePath = binPath + i.ToString("D4") + ".BIN";
+                string binFilePath = Path.Combine(binPath, i.ToString("D4") + ".BIN");
 
                 uint FileLength = 0;
                 byte[] bin = new byte[0];

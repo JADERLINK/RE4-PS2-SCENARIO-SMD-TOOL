@@ -287,7 +287,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                     idxBin.BoneLines = new BoneLine[1];
                     BoneLine bone = new BoneLine();
                     bone.BoneId = 0;
-                    bone.BoneParent = -1;
+                    bone.BoneParent = 0xFF; // -1
                     idxBin.BoneLines[0] = bone;
                     idxBin.CompressVertices = true;
                     idxBin.DrawDistanceNegativePadding = 1f;

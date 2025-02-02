@@ -9,7 +9,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
 {
     class Program
     {
-        public const string VERSION = "B.1.2.04 (2024-05-01)";
+        public const string VERSION = "B.1.2.5 (2025-02-02)";
 
         public static string headerText()
         {
@@ -20,9 +20,10 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                   $"# Version {VERSION}";
         }
 
-
         static void Main(string[] args)
         {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             Console.WriteLine(headerText());
 
             if (args.Length == 0)
@@ -49,7 +50,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 Console.WriteLine("The file does not exist;");
             }
 
-            Console.WriteLine("End");
+            Console.WriteLine("Finished!!!");
         }
 
         private static void Actions(string[] args)
@@ -57,18 +58,19 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
             FileInfo fileInfo = new FileInfo(args[0]);
             Console.WriteLine("File: " + fileInfo.Name);
 
-            string Extension = fileInfo.Extension.ToUpper();
+            string baseDirectory = fileInfo.DirectoryName;
+            string baseName = Path.GetFileNameWithoutExtension(fileInfo.Name);
+
+            string Extension = fileInfo.Extension.ToUpperInvariant();
 
             // modo extract
             if (Extension == ".SMD")
             {
-                string baseDirectory = fileInfo.DirectoryName + "\\";
-                string baseName = fileInfo.Name.Remove(fileInfo.Name.Length - fileInfo.Extension.Length, fileInfo.Extension.Length);
                 string scenarioName = baseName + ".scenario";
                 string BinFolder = baseName + "_BIN";
                 string tplFileName = baseName + ".TPL";
-                string BaseBinDirectory = baseDirectory + baseName + "_BIN\\";
-                string tplPath = baseDirectory + tplFileName;
+                string BaseBinDirectory = Path.Combine(baseDirectory, baseName + "_BIN");
+                string tplPath = Path.Combine(baseDirectory, tplFileName);
 
                 Dictionary<int, RE4_PS2_BIN_TOOL.EXTRACT.PS2BIN> BinDic = null;
                 Dictionary<RE4_PS2_BIN_TOOL.ALL.MaterialPart, string> materialInvDic = null;
@@ -103,17 +105,14 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
             //mode repack usando obj
             else if (Extension == ".IDXPS2SCENARIO")
             {
-                string baseFileName = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
-                string baseDirectory = fileInfo.Directory.FullName + "\\";
-
                 Stream idxFile = fileInfo.OpenRead();
                 SCENARIO.IdxPs2Scenario idxPs2Scenario = SCENARIO.IdxPs2ScenarioLoader.Loader(new StreamReader(idxFile, Encoding.ASCII));
 
 
-                string objPath = baseDirectory + baseFileName + ".obj";
-                string mtlPath = baseDirectory + baseFileName + ".mtl";
-                string idxmaterialPath = baseDirectory + baseFileName + ".idxmaterial";
-                string tplPath = baseDirectory + idxPs2Scenario.TplFile;
+                string objPath =  Path.Combine(baseDirectory, baseName + ".obj");
+                string mtlPath = Path.Combine(baseDirectory, baseName + ".mtl");
+                string idxmaterialPath = Path.Combine(baseDirectory, baseName + ".idxmaterial");
+                string tplPath = Path.Combine(baseDirectory, idxPs2Scenario.TplFile);
 
                 Stream objFile = null;
                 Stream mtlFile = null;
@@ -123,7 +122,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 if (File.Exists(objPath))
                 {
 
-                    Console.WriteLine("Load File: " + baseFileName + ".obj");
+                    Console.WriteLine("Load File: " + baseName + ".obj");
                     objFile = new FileInfo(objPath).OpenRead();
                 }
                 else
@@ -136,7 +135,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 {
                     if (File.Exists(idxmaterialPath))
                     {
-                        Console.WriteLine("Load File: " + baseFileName + ".idxmaterial");
+                        Console.WriteLine("Load File: " + baseName + ".idxmaterial");
                         idxmaterialFile = new FileInfo(idxmaterialPath).OpenRead();
                     }
                     else
@@ -150,7 +149,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 {
                     if (File.Exists(mtlPath))
                     {
-                        Console.WriteLine("Load File: " + baseFileName + ".mtl");
+                        Console.WriteLine("Load File: " + baseName + ".mtl");
                         mtlFile = new FileInfo(mtlPath).OpenRead();
                     }
                     else
@@ -190,7 +189,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 {
                     Console.WriteLine("Converting .mtl");
                     RE4_PS2_BIN_TOOL.REPACK.MtlConverter.Convert(idxMtl, out material);
-                    RE4_PS2_BIN_TOOL.EXTRACT.OutputMaterial.CreateIdxMaterial(material, baseDirectory, baseFileName + ".Repack");
+                    RE4_PS2_BIN_TOOL.EXTRACT.OutputMaterial.CreateIdxMaterial(material, baseDirectory, baseName + ".Repack");
                 }
 
                 //----
@@ -231,18 +230,16 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL
                 //cria um novo idxps2smd
                 Console.WriteLine("Creating new .idxuhdsmd");
                 SCENARIO.SMDLine[] smdLines = SCENARIO.SmdLineParcer.Parser(idxPs2Scenario.SmdAmount, idxPs2Scenario.SmdLines, SMDLineIdxDic, objGroupInfos);
-                SCENARIO.OutputScenario.CreateIdxps2Smd(smdLines, Boxes, idxPs2Scenario.BinFolder, baseDirectory, baseFileName + ".Repack", idxPs2Scenario.SmdFileName, idxPs2Scenario.TplFile, idxPs2Scenario.BinAmount);
+                SCENARIO.OutputScenario.CreateIdxps2Smd(smdLines, Boxes, idxPs2Scenario.BinFolder, baseDirectory, baseName + ".Repack", idxPs2Scenario.SmdFileName, idxPs2Scenario.TplFile, idxPs2Scenario.BinAmount);
 
                 // cria novo SMDmodelReference
-                SCENARIO.OutputScenario.CreateSMDmodelReference(smdLines, baseDirectory, baseFileName + ".Repack");
+                SCENARIO.OutputScenario.CreateSMDmodelReference(smdLines, baseDirectory, baseName + ".Repack");
 
             }
             
             //mode repack usando BIN
             else if (Extension == ".IDXPS2SMD")
             {
-                string baseDirectory = fileInfo.Directory.FullName + "\\";
-
                 Stream idxFile = fileInfo.OpenRead();
                 SCENARIO.IdxPs2Scenario idxPs2Smd = SCENARIO.IdxPs2ScenarioLoader.Loader(new StreamReader(idxFile, Encoding.ASCII));
 

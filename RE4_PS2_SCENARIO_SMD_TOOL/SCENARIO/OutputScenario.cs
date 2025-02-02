@@ -11,9 +11,9 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 {
     public static class OutputScenario
     {
-        public static void CreateObjScenario(SMDLine[] SMDLines, Dictionary<int, PS2BIN> bins, Dictionary<MaterialPart, string> materialList, string baseDiretory, string baseFileName)
+        public static void CreateObjScenario(SMDLine[] SMDLines, Dictionary<int, PS2BIN> bins, Dictionary<MaterialPart, string> materialList, string baseDirectory, string baseFileName)
         {
-            TextWriter text = new FileInfo(baseDiretory + baseFileName + ".obj").CreateText();
+            TextWriter text = new FileInfo(Path.Combine(baseDirectory, baseFileName + ".obj")).CreateText();
             text.WriteLine(Program.headerText());
             text.WriteLine("mtllib " + baseFileName + ".mtl");
 
@@ -196,11 +196,11 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
             }
         }
 
-        public static void CreateSMDmodelReference(SMDLine[] SMDLines, string baseDiretory, string smdFileName)
+        public static void CreateSMDmodelReference(SMDLine[] SMDLines, string baseDirectory, string smdFileName)
         {
             var inv = System.Globalization.CultureInfo.InvariantCulture;
 
-            TextWriter text = new FileInfo(baseDiretory + smdFileName + ".reference.smd").CreateText();
+            TextWriter text = new FileInfo(Path.Combine(baseDirectory, smdFileName + ".reference.smd")).CreateText();
             text.WriteLine("version 1");
             text.WriteLine("nodes");
 
@@ -299,7 +299,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
         public static void CreateIdxScenario(SMDLine[] smdLines, Dictionary<int, BinRenderBox> boxes, string binFolder, string baseDirectory, string baseFileName, string SmdFileName, string TplFile)
         {
             //
-            TextWriter text = new FileInfo(baseDirectory + baseFileName + ".idxps2scenario").CreateText();
+            TextWriter text = new FileInfo(Path.Combine(baseDirectory, baseFileName + ".idxps2scenario")).CreateText();
             text.WriteLine(Program.headerText());
             text.WriteLine("");
 
@@ -402,7 +402,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
         public static void CreateIdxps2Smd(SMDLine[] smdLines, Dictionary<int, BinRenderBox> boxes, string binFolder, string baseDirectory, string baseFileName, string SmdFileName, string TplFile, int binAmount)
         {
-            TextWriter text = new FileInfo(baseDirectory + baseFileName + ".idxps2smd").CreateText();
+            TextWriter text = new FileInfo(Path.Combine(baseDirectory, baseFileName + ".idxps2smd")).CreateText();
             text.WriteLine(Program.headerText());
             text.WriteLine("");
 
@@ -442,10 +442,10 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
             text.WriteLine(id.ToString("D3") + "_unused2:" + smdLine.unused2.ToString("X8"));        
         }
 
-        public static void CreateDrawDistanceObj(SMDLine[] smdLine, Dictionary<int, BinRenderBox> boxes, string baseDiretory, string baseFileName)
+        public static void CreateDrawDistanceObj(SMDLine[] smdLine, Dictionary<int, BinRenderBox> boxes, string baseDirectory, string baseFileName)
         {
             //
-            TextWriter text = new FileInfo(baseDiretory + baseFileName + ".DrawDistance.obj").CreateText();
+            TextWriter text = new FileInfo(Path.Combine(baseDirectory, baseFileName + ".DrawDistance.obj")).CreateText();
             text.WriteLine(Program.headerText());
             text.WriteLine("");
             int index = 0;

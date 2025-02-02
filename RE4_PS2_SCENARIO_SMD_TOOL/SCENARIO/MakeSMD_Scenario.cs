@@ -23,7 +23,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
             IdxMaterial material,
             bool createBinFiles)
         {
-            string binPath = baseDirectory + idxScenario.BinFolder + "\\";
+            string binPath = Path.Combine(baseDirectory, idxScenario.BinFolder);
 
             if (createBinFiles)
             {
@@ -32,7 +32,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
 
             int SmdCount = idxScenario.SmdAmount;
 
-            Stream stream = new FileInfo(baseDirectory + smdFileName).Create();
+            Stream stream = new FileInfo(Path.Combine(baseDirectory, smdFileName)).Create();
 
             byte[] header = new byte[0x10];
             header[0] = 0x40;
@@ -175,7 +175,7 @@ namespace RE4_PS2_SCENARIO_SMD_TOOL.SCENARIO
                             int lenght = (int)(outOffset - tempOffset);
                             byte[] bin = new byte[lenght];
                             stream.Read(bin, 0, lenght);
-                            File.WriteAllBytes(binPath + i.ToString("D4") + ".BIN", bin);
+                            File.WriteAllBytes(Path.Combine(binPath, i.ToString("D4") + ".BIN"), bin);
                             stream.Position = outOffset;
                         }
                         catch (Exception ex)
