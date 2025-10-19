@@ -9,14 +9,14 @@ Programa destinado a extrair e recompactar os cenários usando somente um arquiv
 ## Updates
 
 **Update: V.1.3.0**
-<br> Foi reformulada a tool nessa versão do programa.
-<br> Foi substituído o arquivo 'idxps2scenario' pelo arquivo 'idx_ps2_scenario'
-<br> E o arquivo 'idxps2smd' pelo arquivo 'idx_ps2_smd', para ter um conteúdo mais simples de editar.
-<br> O conteúdo dentro do OBJ continua o mesmo, então você pode usar os OBJ gerados com a versão anterior do programa.
-<br> Agora o conteúdo de 'BoundingBox' é calculado automaticamente, mas isso pode ser desabilitado.
-<br> A representação de 'DrawDistance' mudou para 'BBox', no qual os dados são armazenados de uma maneira diferente da anterior.
-<br> Agora pode ser usado mais de um arquivo TPL no SMD, e atribuí-los aos BIN, se o usuário da tool preferir.
-<br> Feito melhorias na tool, e outras novidades. 
+<br> * Foi reformulada a tool nessa versão do programa.
+<br> * Foi substituído o arquivo 'idxps2scenario' pelo arquivo 'idx_ps2_scenario'
+<br> * E o arquivo 'idxps2smd' pelo arquivo 'idx_ps2_smd', para ter um conteúdo mais simples de editar.
+<br> * O conteúdo dentro do OBJ continua o mesmo, então você pode usar os OBJ gerados com a versão anterior do programa.
+<br> * Agora o conteúdo de 'BoundingBox' é calculado automaticamente, mas isso pode ser desabilitado.
+<br> * A representação de 'DrawDistance' mudou para 'BBox', no qual os dados são armazenados de uma maneira diferente da anterior.
+<br> * Agora pode ser usado mais de um arquivo TPL no SMD, e atribuí-los aos BIN, se o usuário da tool preferir.
+<br> * Feito melhorias na tool, e outras novidades. 
 
 ## RE4_PS2_SCENARIO_SMD_TOOL.exe
 
@@ -61,8 +61,8 @@ Ao fazer o repack serão gerados os arquivos:
 Use o bat: "RE4_PS2_SCENARIO_SMD_TOOL Repack all with idx_ps2_smd.bat"
 <br>Nesse exemplo, vou usar o arquivo: "r204_004.scenario.idx_ps2_smd"
 <br> Que vai requisitar os arquivos:
-<br> * os arquivos .BIN da pasta "r204_004_BIN";
-<br> * e o arquivo TPL de nome "r204_004.TPL";
+<br> * os arquivos 'BIN' da pasta "r204_004_BIN";
+<br> * e o arquivo 'TPL' de nome "r204_004.TPL";
 
 Ao fazer o repack será gerado o arquivo:
 <br> * r204_004.SMD (esse é o arquivo para ser colocado no r204.dat);
@@ -71,25 +71,25 @@ Nota: esse é o método antigo, no qual se edita os bin individualmente, porém 
 
 ## Sobre r204_004.scenario.obj
 Esse arquivo é onde está todo o cenário, nele os arquivos BIN são separados por grupos, no qual a nomenclatura deve ser respeitada:
-<br> Exemplo:
-<br> PS2SCENARIO#SMD_000#SMX_000#TYPE_09#BIN_129#COLOR#
-<br> PS2SCENARIO#SMD_077#SMX_060#TYPE_8C#BIN_140#NORMAL#
+<br> *Exemplo:*
+<br> **PS2SCENARIO#SMD_000#SMX_000#TYPE_09#BIN_129#COLOR#**
+<br> **PS2SCENARIO#SMD_001#SMX_060#TYPE_8C#BIN_140#NORMAL#**
 
-Sendo:
+*Sendo:*
 <br>* É obrigatório o nome do grupo começar com "PS2SCENARIO", e ser dividido por # ou _
 <br>* A ordem dos campos não pode ser mudada;
-<br>* SMD_000 esse é o ID da posição da Entry/Line no .SMD, a numeração é em decimal
-<br>* SMX_000 esse é o ID do SMX, veja o arquivo .SMX,  a numeração é em decimal
-<br>* TYPE_08 esse é um valor em hexadecimal que representa flags, veja mais abaixo sobre.
-<br>* BIN_000 esse é o id do bin que será usado, para bin repetidos, será considerado somente o primeiro, (o próximo com o mesmo id, será usado o mesmo modelo que do primeiro).
+<br>* SMD_000 -> esse é o ID da posição da Entry/Line no .SMD, a numeração é em decimal
+<br>* SMX_000 -> esse é o ID do SMX, veja o arquivo .SMX,  a numeração é em decimal
+<br>* TYPE_08 -> esse é um valor em hexadecimal que representa flags, veja mais abaixo sobre.
+<br>* BIN_000 -> esse é o id do bin que será usado, para bin repetidos, será considerado somente o primeiro, (o próximo com o mesmo id, será usado o mesmo modelo que do primeiro).
 <br>* COLOR/NORMAL esse texto define o tipo de BIN, sendo:
 <br>+ COLOR: o BIN não vai ter as normals, mas vai ter cor por vértices;
 <br>+ NORMAL: o BIN vai ter as normals, e não terá cor por vértices (esse tipo ocupa mais espaço, pois também tem suporte a pesos por Bone);
 <br>* o nome do grupo deve terminar com # ou _ (pois, após salvo o arquivo, o Blender coloca mais texto no final do nome do grupo);
 
 ----> Caso use outro editor (3dsMax), o nome dos objetos/grupos também pode ser:
-<br> PS2SCENARIO\_SMD\_000\_SMX\_000\_TYPE\_09\_BIN\_129\_COLOR\_
-<br> PS2SCENARIO\_SMD\_077\_SMX\_060\_TYPE\_8C\_BIN\_140\_NORMAL\_
+<br> **PS2SCENARIO\_SMD\_000\_SMX\_000\_TYPE\_09\_BIN\_129\_COLOR\_**
+<br> **PS2SCENARIO\_SMD\_001\_SMX\_060\_TYPE\_8C\_BIN\_140\_NORMAL\_**
 
 ----> Sobre verificações de grupos:
 <br> * No Repack se ao lado direito do nome do grupo aparecer o texto "The group name is wrong;", significa que o nome do grupo está errado, e o seu arquivo SMD vai ficar errado;
@@ -143,8 +143,8 @@ Segue abaixo a lista de comandos mais importantes presente no arquivo:
 <br> // os valores estão em escala global do modelo e representam os vértices que estão nos limites do modelo de cada bin.
 
 **Os campos abaixo somente estão presentes no arquivo idx_ps2_smd**
-<br> * BinFileID:0 // diz qual arquivo bin é usado (valor em decimal).
-<br> * SmxID:0 // diz qual SMX é usado e é vinculado ao arquivo SMX (valor em decimal).
+<br> * BinFileID:0 // diz qual arquivo 'BIN' é usado (valor em decimal).
+<br> * SmxID:0 // diz qual 'SMX' é usado e é vinculado ao arquivo 'SMX' (valor em decimal).
 <br> * ObjectStatus:08 // valor em hexadecimal, é o mesmo que o campo "TYPE" no OBJ, veja mais abaixo sobre;
 <br> // os campos abaixo são ocultos por padrão:
 <br> * PositionW:1.0 // sempre 1.0
@@ -158,12 +158,12 @@ Segue abaixo a lista de comandos mais importantes presente no arquivo:
 Esse campo é um enum bitflag, isso significa que cada bit tem uma função, segue abaixo do que cada um faz:
  <br> * 0x00 / 0b00000000 // nenhuma flag ativada.
  <br> * 0x?1 / 0b?0001 // "EXE Scripted", contém evento associado ao modelo, não o remova do SMD
- <br> * 0x?2 / 0b?0010 // desconhecido, não usado no jogo.
+ <br> * 0x?2 / 0b?0010 // Desconhecido, não usado no jogo.
  <br> * 0x?4 / 0b?0100 // "Assign SMX Group ID"
  <br> * 0x?8 / 0b?1000 // "Ends SMX Group, Has SMX(?)"
- <br> * 0x1? / 0b0001? // "Use BIN from shared SMD (BLK)", isso é quando tem BIN compartilhado.
- <br> * 0x2? / 0b0010? // "Use TPL from shared SMD (BLK)", não testei isso, acho que minha tool não suporta isso.
- <br> * 0x4? / 0b0100? // Use MOT from shared SMD (BLK), MOT não funciona / não é usado.
+ <br> * 0x1? / 0b0001? // "Use BIN from shared SMD (BLK)", Essa funcionalidade não está disponível no PS2.
+ <br> * 0x2? / 0b0010? // "Use TPL from shared SMD (BLK)", Essa funcionalidade não está disponível no PS2.
+ <br> * 0x4? / 0b0100? // "Use MOT from shared SMD (BLK)", MOT não funciona / não é usado.
  <br> * 0x8? / 0b1000? // Desconhecido, mas é ativado quando o bin é do tipo NORMAL.
  <br> // Outros valores são combinações dessas funcionalidades, veja bit a bit para saber o que faz.
 
@@ -182,14 +182,15 @@ Agora, é no arquivo MTL que é onde são definidos quais são os IDs (índices 
 <br> Atenção: lembre de fazer o repack do TPL antes de fazer o repack do SMD;
 
 ## Sobre BoundingBox / BBox
-Agora, os campos de BoundingBox são calculados automaticamente por padrão, então você não vai presisar se preocupar com isso.
-<br>Caso o seu modelo fique muito longe da posição original, ele pode começar a aparecer e desaparecer, isso é devido aos valores que definem a que distância os modelos iram ser vistos.
+Agora, os campos de BoundingBox são calculados automaticamente por padrão, então você não vai precisar se preocupar com isso.
+<br>Caso o seu modelo fique muito longe da posição original, ele pode começar a aparecer e desaparecer, isso é devido aos valores que definem a que distância os modelos irão ser vistos.
 <br> Mude os valores de "BBoxMin*" para -327670 ou 0
 <br> E os valores de "BBoxMax*:" para 327670 ou 0
 <br> Isso vai garantir que o modelo fique visível, porém pode gerar um bug na iluminação (ou não).
+<br> Mas isso é válido somente se você for definir os valores de "BBox" manualmente.
 
 ## Bugs e Infos
-Ao mudar os valores originais dos campos "Scale*", "Angle*", "Position*", "BBoxMin*" e "BBoxMax*", pode ocasionar um bug na iluminação do modelo, no qual não sei como resolver.
+<del>Ao mudar os valores originais dos campos "Scale*", "Angle*", "Position*", "BBoxMin*" e "BBoxMax*", pode ocasionar um bug na iluminação do modelo, no qual não sei como resolver.</del>
 <br> Nota: O programa muda o valor de "Position*" automaticamente, pois tenho que centralizar os arquivos BIN, então todas as SMD entry com BIN repetidos, você vai ter que recalcular a posição do objeto;
 <br> As novas posições ficam no arquivo "r204_004.scenario.Repack.idx_ps2_smd";
 
