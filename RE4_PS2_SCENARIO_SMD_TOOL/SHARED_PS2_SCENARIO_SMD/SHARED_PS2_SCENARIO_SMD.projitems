@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c53d6c79-49d8-47de-9f80-17c6d8387f98</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SHARED_PS2_SCENARIO_SMD</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\LimitConsts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\SMDLineIdxClone.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\WithOBJ\BINrepackIntermediary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\IdxPs2ScenarioLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\OutputFiles\DebugFiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\OutputFiles\ScenarioIdx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\Ps2ScenarioMatFix.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\WithOBJ\MakeSMD_Fill_BIN_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\MakeSMD_Fill_TPL_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\WithOBJ\Ps2ScenarioRepack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\WithOBJ\SmdBaseLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\SmdLineParcer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\CounterBinTpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\Extract_BIN_Content_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\Extract_BIN_Inside_SMD_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\Extract_TPL_Inside_SMD_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\PS2BIN_To_GenericModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\PS2GenericModelBIN.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\OutputFiles\ScenarioOBJ.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\SmdExtract2007PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\ToFileMethod_BIN.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_EXTRACT\ToFileMethod_TPL_PS2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\MakeSMD_Top.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\MakeSMD_WithBinFolder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\PutEmptyFiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_REPACK\ValidateMagic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SCENARIO_TOOLS\RotationUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Start_IdxSMD_Repack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Start_ScenarioOBJ_Repack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Start_SMD_Extract.cs" />
+  </ItemGroup>
+</Project>
